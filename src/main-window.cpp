@@ -9,6 +9,7 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QTreeWidget>
+#include <QKeyEvent>
 
 #include <dialogs.hpp>
 #include <endian-conversions.hpp>
@@ -35,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_viewer = std::make_unique<fdt::viewer>(m_ui->treeWidget);
 
-    m_hexview = new QHexView();
+    m_hexview = new QHexView(this);
     m_hexview->setReadOnly(true);
     m_ui->hexview_layout->addWidget(m_hexview);
 
@@ -86,6 +87,7 @@ MainWindow::MainWindow(QWidget *parent)
             delete m_fdt;
             m_fdt = nullptr;
             update_view();
+            save_last_opened();
         }
     });
 
@@ -96,6 +98,7 @@ MainWindow::MainWindow(QWidget *parent)
         m_fdt = nullptr;
         m_ui->treeWidget->clear();
         update_view();
+        save_last_opened();
     });
 
     connect(m_ui->treeWidget, &QTreeWidget::itemSelectionChanged, this, &MainWindow::update_view);
@@ -121,11 +124,59 @@ MainWindow::MainWindow(QWidget *parent)
 
     if (!rect.isEmpty())
         setGeometry(rect);
+
+    if (settings.view_darkstyle.value())
+    {
+        {
+            QPalette palette;
+
+            palette.setColor(QPalette::PlaceholderText, palette.color(QPalette::Inactive, QPalette::Text));
+            this->setPalette(palette);
+        }
+        {
+            for (int i = QsciLexerCPP::Default; i < QsciLexerCPP::InactiveEscapeSequence; i++)
+                lexer->setPaper(QColor(0, 0, 0), i);
+
+            m_ui->editor->setMarginsBackgroundColor(QColor(35, 35, 35));
+            m_ui->editor->setMarginsForegroundColor(QColor(136, 136, 136));
+            lexer->setDefaultPaper(QColor(0, 0, 0));
+            lexer->setColor(QColor(170, 170, 170), QsciLexerCPP::Identifier);
+            lexer->setColor(QColor(170, 170, 170), QsciLexerCPP::Operator);
+            lexer->setColor(QColor(170, 170, 170), QsciLexerCPP::PreProcessor);
+            lexer->setColor(QColor(255, 85, 255), QsciLexerCPP::DoubleQuotedString);
+            lexer->setColor(QColor(255, 85, 255), QsciLexerCPP::Number);
+            QFont font{};
+            font.setBold(true);
+            lexer->setFont(font, QsciLexerCPP::Identifier);
+        }
+        {
+            QHexOptions opts;
+            opts.linebackground = QColor(35, 35, 35);
+            opts.headercolor = QColor(255, 255, 255);
+            opts.separatorcolor = QColor(0, 150, 0);
+            opts.commentcolor = QColor(136, 136, 136);
+
+            m_hexview->setOptions(opts);
+            {
+                QPalette p = m_ui->property_view_page->palette();
+                p.setColor(QPalette::ColorRole::Base, QColor(0, 0, 0));
+                m_ui->property_view_page->setPalette(p);
+            }
+        }
+    }
+
+    if (settings.view_autoopen_lastloaded.value())
+    {
+        auto last_opened = settings.view_last_loaded.value();
+        for (const auto& path: last_opened)
+            open(path);
+    }
 }
 
 MainWindow::~MainWindow() {
     viewer_settings settings;
     settings.window_position.set(geometry());
+    save_last_opened();
 }
 
 void MainWindow::open_directory(const QString &path) {
@@ -139,6 +190,14 @@ void MainWindow::open_directory(const QString &path) {
 void MainWindow::open_file(const QString &path) {
     if (!open(path))
         dialogs::warn_invalid_fdt(path, this);
+    else
+        save_last_opened();
+}
+
+void MainWindow::save_last_opened()
+{
+    viewer_settings settings;
+    settings.view_last_loaded.set(m_viewer->get_loaded());
 }
 
 bool MainWindow::open(const QString &path) {
@@ -212,10 +271,19 @@ void MainWindow::update_view() {
 
     m_ui->editor->setText(ret);
 
-    QFontMetrics metrics(QFont{});
-    const auto num = QString::number(m_ui->editor->lines());
+    viewer_settings settings;
 
-    m_ui->editor->setMarginWidth(0, metrics.horizontalAdvance(num) * 1.25);
+    if (settings.view_darkstyle.value())
+    {
+        m_ui->editor->setMarginWidth(0, QString("_%0").arg(std::max(m_ui->editor->lines(), 9999)));
+    }
+    else
+    {
+        QFontMetrics metrics(QFont{});
+        const auto num = QString::number(m_ui->editor->lines());
+
+        m_ui->editor->setMarginWidth(0, metrics.horizontalAdvance(num) * 1.25);
+    }
 }
 
 void MainWindow::property_export() {
@@ -239,3 +307,18 @@ QString MainWindow::currentId()
         return "";
     return m_fdt->data(0, fdt::qt_wrappers::ROLE_FILEPATH).toString();
 }
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    // TODO: Maybe it's worth putting this into a class variable or a singleton? Loading the config every time is not very good.
+    viewer_settings settings;
+    if (settings.window_escape_exit.value() && event->key() == Qt::Key_Escape)
+    {
+        close();
+    }
+    else
+    {
+        QMainWindow::keyPressEvent(event);
+    }
+}
+

@@ -12,6 +12,7 @@ class QWidget;
 namespace dialogs {
 auto ask_already_opened(QWidget *parent) noexcept -> bool;
 auto warn_invalid_fdt(const QString &filename, QWidget *parent) noexcept -> void;
+auto info_need_restart(QWidget *parent) noexcept -> bool;
 } // namespace dialogs
 
 namespace fdt {

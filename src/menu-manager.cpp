@@ -4,6 +4,7 @@
 #include <QMenuBar>
 
 #include <viewer-settings.hpp>
+#include <dialogs.hpp>
 
 menu_manager::menu_manager(QMenuBar *menubar)
         : QObject(nullptr) {
@@ -73,6 +74,39 @@ menu_manager::menu_manager(QMenuBar *menubar)
         else
             show_normal();
     });
+
+    {
+        auto view_menu_darkstyle = new QAction("Darkstyle");
+        view_menu->addAction(view_menu_darkstyle);
+        view_menu_darkstyle->setCheckable(true);
+        view_menu_darkstyle->setChecked(settings.view_darkstyle.value());
+        connect(view_menu_darkstyle, &QAction::triggered, [this](bool value) {
+            viewer_settings settings;
+            settings.view_darkstyle.set(value);
+            // TODO: view update
+            dialogs::info_need_restart(nullptr);
+        });
+    }
+    {
+        auto view_menu_autoopen_lastloaded = new QAction("Allow auto opening of last loaded files");
+        view_menu->addAction(view_menu_autoopen_lastloaded);
+        view_menu_autoopen_lastloaded->setCheckable(true);
+        view_menu_autoopen_lastloaded->setChecked(settings.view_autoopen_lastloaded.value());
+        connect(view_menu_autoopen_lastloaded, &QAction::triggered, [this](bool value) {
+            viewer_settings settings;
+            settings.view_autoopen_lastloaded.set(value);
+        });
+    }
+    {
+        auto window_menu_escape_exit = new QAction("Exit when <ESC> press");
+        window_menu->addAction(window_menu_escape_exit);
+        window_menu_escape_exit->setCheckable(true);
+        window_menu_escape_exit->setChecked(settings.window_escape_exit.value());
+        connect(window_menu_escape_exit, &QAction::triggered, [this](bool value) {
+            viewer_settings settings;
+            settings.window_escape_exit.set(value);
+        });
+    }
 
     property_export->setIcon(QIcon::fromTheme("document-save"));
 

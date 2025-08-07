@@ -40,6 +40,13 @@ auto dialogs::ask_already_opened(QWidget *parent) noexcept -> bool {
         QMessageBox::Yes;
 }
 
+auto dialogs::info_need_restart(QWidget *parent) noexcept -> bool {
+    return QMessageBox::information(parent, parent->tr("Information"),
+               parent->tr("An application restart is required."),
+               QMessageBox::Ok) !=
+        QMessageBox::Ok;
+}
+
 auto dialogs::warn_invalid_fdt(const QString &filename, QWidget *parent) noexcept -> void {
     QMessageBox::critical(parent, parent->tr("Invalid FDT format"), parent->tr("Unable to parse %1").arg(filename));
 }

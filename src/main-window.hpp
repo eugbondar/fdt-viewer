@@ -32,12 +32,14 @@ public:
     bool open(const QString &path);
 
 private:
+    void save_last_opened();
     void update_fdt_path(QTreeWidgetItem *item = nullptr);
     void update_view();
     void property_export();
 
 protected:
     QString currentId();
+    void keyPressEvent(QKeyEvent *event) override;
 
 private:
     QHexView *m_hexview{nullptr};
