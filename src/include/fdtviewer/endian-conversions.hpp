@@ -1,7 +1,7 @@
 #pragma once
 
 #include <algorithm>
-#include <types.hpp>
+#include <fdtviewer/types.hpp>
 
 #include <bit>
 #include <span>

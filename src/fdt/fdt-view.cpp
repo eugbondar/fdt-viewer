@@ -1,21 +1,22 @@
-#include "fdt-view.hpp"
+#include <fdtviewer/fdt/fdt-view.hpp>
 
-#include <endian-conversions.hpp>
-#include <fdt/fdt-generator-qt.hpp>
-#include <fdt/fdt-parser.hpp>
+#include <fdtviewer/endian-conversions.hpp>
+#include <fdtviewer/fdt/fdt-generator-qt.hpp>
+#include <fdtviewer/fdt/fdt-parser.hpp>
 #include <cstddef>
 
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QFileInfo>
 
-#include "fdt/fdt-parser-tokens.hpp"
-#include "fdt/fdt-property-types.hpp"
+#include <fdtviewer/fdt/fdt-parser-tokens.hpp>
+#include <fdtviewer/fdt/fdt-property-types.hpp>
 #include "qnamespace.h"
 #include <string_view>
 
 namespace {
 constexpr auto BINARY_PREVIEW_LIMIT = 64;
+constexpr auto DEBUG_LINENUMBER = false;
 
 QString present_u32be(const QByteArray &data) {
     QString ret;
@@ -192,7 +193,7 @@ bool fdt::fdt_content_filter(QTreeWidgetItem *node, const std::function<bool(con
     return isFound;
 }
 
-bool fdt::fdt_view_dts(QTreeWidgetItem *item, QString &ret, int depth) {
+bool fdt::fdt_view_dts(QTreeWidgetItem *item, QString &ret, int depth, int *line_number_counter_) {
     QString depth_str;
     depth_str.fill(' ', depth * 4);
 
@@ -214,25 +215,41 @@ bool fdt::fdt_view_dts(QTreeWidgetItem *item, QString &ret, int depth) {
     if (item->isHidden())
         return false;
 
+    int line_number_counter = line_number_counter_ ? *line_number_counter_ : 1;
+
+    if (DEBUG_LINENUMBER) ret += QVariant(line_number_counter).toString() + " ";
     ret += depth_str + item->data(0, Qt::DisplayRole).toString() + " {\n";
+    item->setData(0, fdt::qt_wrappers::ROLE_LINENUMBER, line_number_counter++);
 
     for (auto item : properties) {
         const auto property = item->data(0, fdt::qt_wrappers::ROLE_PROPERTY).value<fdt::qt_wrappers::property>();
+        if (DEBUG_LINENUMBER) ret += QVariant(line_number_counter).toString() + " ";
         ret += depth_str + "    " + present(property) + "\n";
+        item->setData(0, fdt::qt_wrappers::ROLE_LINENUMBER, line_number_counter++);
     }
 
     if (!properties.isEmpty() && !nodes.isEmpty())
+    {
         ret += "\n";
+        line_number_counter++;
+    }
 
     for (auto i = 0; i < nodes.count(); ++i) {
-        if (!fdt_view_dts(nodes.at(i), ret, depth + 1))
+        if (!fdt_view_dts(nodes.at(i), ret, depth + 1, &line_number_counter))
             continue;
 
         if (nodes.count() - 1 != i)
+        {
             ret += "\n";
+            line_number_counter++;
+        }
     }
 
     ret += depth_str + "};\n";
+    line_number_counter++;
+
+    if (line_number_counter_)
+        *line_number_counter_ = line_number_counter;
 
     return true;
 }

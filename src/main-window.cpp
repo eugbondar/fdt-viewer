@@ -1,5 +1,5 @@
-#include "main-window.hpp"
-#include "fdt/fdt-property-types.hpp"
+#include <fdtviewer/main-window.hpp>
+#include <fdtviewer/fdt/fdt-property-types.hpp>
 #include "ui_main-window.h"
 
 #include <QAction>
@@ -11,12 +11,12 @@
 #include <QTreeWidget>
 #include <QKeyEvent>
 
-#include <dialogs.hpp>
-#include <endian-conversions.hpp>
-#include <fdt/fdt-parser.hpp>
-#include <fdt/fdt-view.hpp>
-#include <menu-manager.hpp>
-#include <viewer-settings.hpp>
+#include <fdtviewer/dialogs.hpp>
+#include <fdtviewer/endian-conversions.hpp>
+#include <fdtviewer/fdt/fdt-parser.hpp>
+#include <fdtviewer/fdt/fdt-view.hpp>
+#include <fdtviewer/menu-manager.hpp>
+#include <fdtviewer/viewer-settings.hpp>
 
 #include <Qsci/qscilexercpp.h>
 #include <Qsci/qsciscintilla.h>

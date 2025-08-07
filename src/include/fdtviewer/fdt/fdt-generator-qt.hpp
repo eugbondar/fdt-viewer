@@ -1,7 +1,7 @@
 #pragma once
 
-#include "fdt/fdt-property-types.hpp"
-#include "fdt/fdt-parser-tokens.hpp"
+#include <fdtviewer/fdt/fdt-property-types.hpp>
+#include <fdtviewer/fdt/fdt-parser-tokens.hpp>
 
 #include <stack>
 #include <string_view>
@@ -47,6 +47,7 @@ constexpr auto ROLE_PROPERTY = Qt::UserRole;
 constexpr auto ROLE_FILEPATH = Qt::UserRole + 1;
 constexpr auto ROLE_NODETYPE = Qt::UserRole + 2;
 constexpr auto ROLE_DATA_HOLDER = Qt::UserRole + 3;
+constexpr auto ROLE_LINENUMBER = Qt::UserRole + 4;
 
 struct tree_generator {
     tree_generator(tree_info &reference, QTreeWidget *target, QString &&name, QString &&id);

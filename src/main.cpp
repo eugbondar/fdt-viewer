@@ -1,4 +1,4 @@
-#include "main-window.hpp"
+#include <fdtviewer/main-window.hpp>
 
 #include <QApplication>
 #include <QCommandLineOption>

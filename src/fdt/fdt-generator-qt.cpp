@@ -1,6 +1,6 @@
-#include "fdt-generator-qt.hpp"
-#include "fdt/fdt-parser-tokens.hpp"
-#include "fdt/fdt-property-types.hpp"
+#include <fdtviewer/fdt/fdt-generator-qt.hpp>
+#include <fdtviewer/fdt/fdt-parser-tokens.hpp>
+#include <fdtviewer/fdt/fdt-property-types.hpp>
 #include <memory>
 #include <string_view>
 

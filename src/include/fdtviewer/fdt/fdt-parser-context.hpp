@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "fdt/fdt-parser-tokens.hpp"
+#include <fdtviewer/fdt/fdt-parser-tokens.hpp>
 
 namespace fdt::parser {
 

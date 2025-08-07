@@ -65,3 +65,6 @@ add_custom_target(docker
 include(CPack)
 
 add_subdirectory("submodules/qhexview")
+set_property(TARGET QHexView PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+

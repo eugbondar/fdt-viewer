@@ -1,10 +1,10 @@
-#include "menu-manager.hpp"
+#include <fdtviewer/menu-manager.hpp>
 
 #include <QAction>
 #include <QMenuBar>
 
-#include <viewer-settings.hpp>
-#include <dialogs.hpp>
+#include <fdtviewer/viewer-settings.hpp>
+#include <fdtviewer/dialogs.hpp>
 
 menu_manager::menu_manager(QMenuBar *menubar)
         : QObject(nullptr) {

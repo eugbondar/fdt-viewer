@@ -1,8 +1,8 @@
-#include "fdt-parser.hpp"
-#include "fdt/fdt-header.hpp"
-#include "fdt/fdt-parser-tokens.hpp"
-#include "fdt-parser-context.hpp"
-#include "endian-conversions.hpp"
+#include <fdtviewer/fdt/fdt-parser.hpp>
+#include <fdtviewer/fdt/fdt-header.hpp>
+#include <fdtviewer/fdt/fdt-parser-tokens.hpp>
+#include <fdtviewer/fdt/fdt-parser-context.hpp>
+#include <fdtviewer/endian-conversions.hpp>
 
 #include <algorithm>
 #include <cstdint>

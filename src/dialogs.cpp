@@ -1,6 +1,6 @@
-#include "dialogs.hpp"
+#include <fdtviewer/dialogs.hpp>
 
-#include <types.hpp>
+#include <fdtviewer/types.hpp>
 
 #include <QFileDialog>
 #include <QMessageBox>

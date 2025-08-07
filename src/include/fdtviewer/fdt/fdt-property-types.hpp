@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <types.hpp>
+#include <fdtviewer/types.hpp>
 #include <QHash>
 
 enum class property_type {

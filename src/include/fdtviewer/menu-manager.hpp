@@ -1,6 +1,6 @@
 #pragma once
 
-#include <types.hpp>
+#include <fdtviewer/types.hpp>
 #include <QObject>
 
 class QAction;

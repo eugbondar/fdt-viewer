@@ -1,6 +1,6 @@
 #pragma once
 
-#include <fdt/fdt-generator-qt.hpp>
+#include <fdtviewer/fdt/fdt-generator-qt.hpp>
 
 class QString;
 class QByteArray;
@@ -26,7 +26,7 @@ private:
 };
 
 bool fdt_view_prepare(QTreeWidget *target, const QByteArray &datamap, const QFileInfo &info);
-bool fdt_view_dts(QTreeWidgetItem *item, QString &ret, int depth = 0);
+bool fdt_view_dts(QTreeWidgetItem *item, QString &ret, int depth = 0, int *line_number_counter = nullptr);
 bool fdt_content_filter(QTreeWidgetItem *item, const std::function<bool(const QString &)> &match);
 
 } // namespace fdt

@@ -1,11 +1,11 @@
 #pragma once
 
-#include <types.hpp>
+#include <fdtviewer/types.hpp>
 
 #include <QMainWindow>
 #include <memory>
 
-#include <fdt/fdt-view.hpp>
+#include <fdtviewer/fdt/fdt-view.hpp>
 
 class QHexView;
 class QTreeWidgetItem;

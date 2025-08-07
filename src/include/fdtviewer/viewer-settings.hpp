@@ -4,7 +4,7 @@
 #include <QSettings>
 #include <QVariant>
 
-#include <types.hpp>
+#include <fdtviewer/types.hpp>
 
 using settings = QSettings;
 

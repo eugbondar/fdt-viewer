@@ -1,7 +1,7 @@
 #pragma once
 
-#include "fdt/fdt-header.hpp"
-#include "fdt/fdt-parser-tokens.hpp"
+#include <fdtviewer/fdt/fdt-header.hpp>
+#include <fdtviewer/fdt/fdt-parser-tokens.hpp>
 
 #include <string_view>
 #include <expected>
