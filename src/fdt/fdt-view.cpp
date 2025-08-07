@@ -94,6 +94,12 @@ auto fdt::viewer::is_loaded(const QString &id) const noexcept -> bool {
     return m_tree.contains(id);
 }
 
+auto fdt::viewer::get_loaded() const noexcept -> QStringList
+{
+    const auto& keys = m_tree.keys();
+    return QStringList(keys.begin(), keys.end());
+}
+
 template <class... Ts>
 struct overloaded : Ts... {
     using Ts::operator()...;
@@ -141,7 +147,11 @@ bool fdt::viewer::load(QByteArray &&data, QString &&name, QString &&id) {
     return true;
 }
 
-void fdt::viewer::drop(QString &&id) {
+void fdt::viewer::drop(const QString &&id) {
+    m_tree.remove(id);
+}
+
+void fdt::viewer::drop(const QString &id) {
     m_tree.remove(id);
 }
 

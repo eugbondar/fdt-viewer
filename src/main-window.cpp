@@ -82,6 +82,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_menu.get(), &menu_manager::quit, this, &MainWindow::close);
     connect(m_menu.get(), &menu_manager::close, this, [this]() {
         if (m_fdt) {
+            m_viewer->drop(currentId());
             delete m_fdt;
             m_fdt = nullptr;
             update_view();
@@ -90,6 +91,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(m_menu.get(), &menu_manager::property_export, this, &MainWindow::property_export);
     connect(m_menu.get(), &menu_manager::close_all, this, [this]() {
+        for (const auto& id: m_viewer->get_loaded())
+            m_viewer->drop(id);
         m_fdt = nullptr;
         m_ui->treeWidget->clear();
         update_view();
@@ -228,4 +231,11 @@ void MainWindow::property_export() {
         m_hexview->setDocument(QHexDocument::fromMemory<QMemoryBuffer>(property.data));
         fdt::export_property_file_dialog(this, property.data, property.name);
     }
+}
+
+QString MainWindow::currentId()
+{
+    if (!m_fdt)
+        return "";
+    return m_fdt->data(0, fdt::qt_wrappers::ROLE_FILEPATH).toString();
 }

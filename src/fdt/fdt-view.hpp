@@ -14,9 +14,11 @@ public:
 
     auto is_loaded(QString &&id) const noexcept -> bool;
     auto is_loaded(const QString &id) const noexcept -> bool;
+    auto get_loaded() const noexcept -> QStringList;
 
     auto load(QByteArray &&data, QString &&name, QString &&id) -> bool;
-    auto drop(QString &&id) -> void;
+    auto drop(const QString &&id) -> void;
+    auto drop(const QString &id) -> void;
 
 private:
     tree_map m_tree;

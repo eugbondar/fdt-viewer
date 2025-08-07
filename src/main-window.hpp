@@ -36,6 +36,9 @@ private:
     void update_view();
     void property_export();
 
+protected:
+    QString currentId();
+
 private:
     QHexView *m_hexview{nullptr};
     std::unique_ptr<Ui::MainWindow> m_ui;
